@@ -31,6 +31,9 @@ try:
             im = im.crop((0,(ysize-xsize)/2,xsize,(ysize-xsize)/2+xsize))
     print("Select an output directory: (caution: files will be overwritten automatically)")
     folder = askdirectory()
+    if len(folder) == 0:
+        loop = False
+        print("invalid folder")
     while(loop):
         choice = raw_input("Please enter the width of the icon you want to export (enter \'a\' for Automatic, or \'q\' for quit): ")
         if choice.lower() == 'a':
