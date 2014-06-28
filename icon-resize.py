@@ -6,7 +6,7 @@ from Tkinter import Tk
 from tkFileDialog import askopenfilename, askdirectory
 
 Tk().withdraw()
-# imLocation = raw_input("Enter location of image (include the extension, aka C:\icon.png)\n")
+print("Select image:")
 imLocation = askopenfilename()
 loop = True
 comRes = [1024,512,152,144,120,114,100,80,76,72,58,57,50,40,29]
@@ -29,7 +29,8 @@ try:
 			im = im.crop(((xsize-ysize)/2,0,(xsize-ysize)/2+ysize,ysize))
 		else:
 			im = im.crop((0,(ysize-xsize)/2,xsize,(ysize-xsize)/2+xsize))
-	folder = askdirectory() # raw_input("Enter location of folder to export icons (aka, C:\\export\\\n")
+	print("Select an output directory: (caution: files will be overwritten automatically)")
+	folder = askdirectory()
 	while(loop):
 		choice = raw_input("Please enter the width of the icon you want to export (enter \'a\' for Automatic, or \'q\' for quit): ")
 		if choice.lower() == 'a':
