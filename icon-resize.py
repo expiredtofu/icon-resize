@@ -1,5 +1,5 @@
 from __future__ import print_function
-import sys
+import glob
 import os.path
 from PIL import Image
 from Tkinter import Tk
@@ -29,29 +29,42 @@ try:
             im = im.crop(((xsize-ysize)/2,0,(xsize-ysize)/2+ysize,ysize))
         else:
             im = im.crop((0,(ysize-xsize)/2,xsize,(ysize-xsize)/2+xsize))
-    print("Select an output directory: (caution: files will be overwritten automatically)")
-    folder = askdirectory()
-    if len(folder) == 0:
-        loop = False
-        print("invalid folder")
-    while(loop):
-        choice = raw_input("Please enter the width of the icon you want to export (enter \'a\' for Automatic, or \'q\' for quit): ")
-        if choice.lower() == 'a':
-            for i in range(len(comRes)):
-                tempIm = im.resize((comRes[i],comRes[i]), Image.ANTIALIAS)
-                tempIm.save(os.path.join(folder,comName[i]))
-                print("Resized",str(comRes[i])+"x"+str(comRes[i]),"to file:",comName[i])
-        elif choice.lower() == 'q':
-            loop = False
+    if ("y" in raw_input("Do you have a folder of existing icons (from icon thief, for example)? (Y)es or (N)o: ").lower()):
+        folder = askdirectory()
+        if len(folder) == 0:
+            print("invalid folder")
         else:
-            try:
-                tempIm = im.resize((int(choice),int(choice)), Image.ANTIALIAS)
-                fn = raw_input("Please enter the filename you want your icon to be, not including the extension (.JPG, .PNG): ")
-                tempIm.save(os.path.join(folder,fn+'.'+'png'))
-                print("Resized",str(choice)+"x"+str(choice),"to file:",fn+'.'+'png')
-            except ValueError:
-                print("Input not recognized, try again please.")
-        print()
+            files = glob.glob(os.path.join(folder,"*.png"))
+            for file in files:
+                oldIm = Image.open(file)
+                oldImRes, dummy = oldIm.size
+                tempIm = im.resize((oldImRes,oldImRes), Image.ANTIALIAS)
+                tempIm.save(file)
+                print("Resized",str(oldImRes)+"x"+str(oldImRes),"to file:",file)
+    else:
+        print("Select an output directory: (caution: files will be overwritten automatically)")
+        folder = askdirectory()
+        if len(folder) == 0:
+            loop = False
+            print("invalid folder")
+        while(loop):
+            choice = raw_input("Please enter the width of the icon you want to export (enter \'a\' for Automatic, or \'q\' for quit): ")
+            if choice.lower() == 'a':
+                for i in range(len(comRes)):
+                    tempIm = im.resize((comRes[i],comRes[i]), Image.ANTIALIAS)
+                    tempIm.save(os.path.join(folder,comName[i]))
+                    print("Resized",str(comRes[i])+"x"+str(comRes[i]),"to file:",comName[i])
+            elif choice.lower() == 'q':
+                loop = False
+            else:
+                try:
+                    tempIm = im.resize((int(choice),int(choice)), Image.ANTIALIAS)
+                    fn = raw_input("Please enter the filename you want your icon to be, not including the extension (.JPG, .PNG): ")
+                    tempIm.save(os.path.join(folder,fn+'.'+'png'))
+                    print("Resized",str(choice)+"x"+str(choice),"to file:",fn+'.'+'png')
+                except ValueError:
+                    print("Input not recognized, try again please.")
+            print()
 except IOError:
     print("invalid file")
     pass
